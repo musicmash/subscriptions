@@ -50,14 +50,14 @@ func init() {
 	log.ConfigureStdLogger(config.Config.Log.Level)
 
 	db.DbMgr = db.NewMainDatabaseMgr()
-}
 
-func main() {
 	log.Info("Ensuring that 'spotify' exists...")
 	if err := db.DbMgr.EnsureStoreExists(storeName); err != nil {
 		log.Panic(err)
 	}
+}
 
+func main() {
 	credentials := &clientcredentials.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
