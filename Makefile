@@ -8,3 +8,6 @@ install:
 
 run:
 	go run ./cmd/artists/...
+
+tests t:
+	go test -v ./internal/...
