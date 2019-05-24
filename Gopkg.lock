@@ -10,9 +10,20 @@
   version = "v1.0.2"
 
 [[projects]]
-  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
-  name = "github.com/sirupsen/logrus"
+  digest = "1:1a23fdd843129ef761ffe7651bc5fe7c5b09fbe933e92783ab06cc11c37b7b37"
+  name = "github.com/rifflock/lfshook"
   packages = ["."]
+  pruneopts = "UT"
+  revision = "b9218ef580f59a2e72dad1aa33d660150445d05a"
+  version = "v2.4"
+
+[[projects]]
+  digest = "1:0a406a3f53396d476d8673920e58a1100ed706e3e6666a0355e6d32cb3430651"
+  name = "github.com/sirupsen/logrus"
+  packages = [
+    ".",
+    "hooks/syslog",
+  ]
   pruneopts = "UT"
   revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
   version = "v1.4.2"
@@ -37,7 +48,9 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/rifflock/lfshook",
     "github.com/sirupsen/logrus",
+    "github.com/sirupsen/logrus/hooks/syslog",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
