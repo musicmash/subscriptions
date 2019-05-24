@@ -75,7 +75,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	log.Info("limit", results.Artists.Limit, "off", results.Artists.Offset, "total", results.Artists.Total)
+	log.Debugf("limit %v offset %v total %v", results.Artists.Limit, results.Artists.Offset, results.Artists.Total)
 	processArtists(client, sortArtistsByPopularity(results.Artists.Artists))
 
 	// load next part
@@ -85,7 +85,7 @@ func main() {
 			log.Panic(err)
 		}
 
-		log.Info("limit", results.Artists.Limit, "off", results.Artists.Offset, "total", results.Artists.Total)
+		log.Debugf("limit %v offset %v total %v", results.Artists.Limit, results.Artists.Offset, results.Artists.Total)
 		processArtists(client, sortArtistsByPopularity(results.Artists.Artists))
 	}
 }
