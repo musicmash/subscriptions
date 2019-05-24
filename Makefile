@@ -17,7 +17,7 @@ lint-all l:
 	bash ./scripts/consistent.sh
 
 add-ssh-key:
-	openssl aes-256-cbc -K $(encrypted_a4311917bb34_key) -iv $(encrypted_a4311917bb34_iv) -in travis_key.enc -out /tmp/travis_key -d
+	openssl aes-256-cbc -K $(encrypted_f6f9818801b5_key) -iv $(encrypted_f6f9818801b5_iv) -in travis_key.enc -out /tmp/travis_key -d
 	chmod 600 /tmp/travis_key
 	ssh-add /tmp/travis_key
 
