@@ -12,6 +12,10 @@ import (
 var DbMgr DataMgr
 
 type DataMgr interface {
+	ArtistMgr
+	ArtistStoreInfoMgr
+	StoreMgr
+	AlbumMgr
 	Begin() *AppDatabaseMgr
 	Commit() *AppDatabaseMgr
 	Rollback() *AppDatabaseMgr
