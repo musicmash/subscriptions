@@ -6,10 +6,10 @@ import (
 )
 
 type Album struct {
-	ID       uint64 `json:"id"        gorm:"primary_key"            sql:"AUTO_INCREMENT"`
-	ArtistID int64  `json:"artist_id" gorm:"unique_index:idx_album_art_id_name_explicit"`
-	Name     string `json:"name"      gorm:"unique_index:idx_album_art_id_name_explicit"`
-	Explicit bool   `json:"explicit"  gorm:"unique_index:idx_album_art_id_name_explicit"`
+	ID         uint64 `json:"id"        gorm:"primary_key"            sql:"AUTO_INCREMENT"`
+	ArtistID   int64  `json:"artist_id" gorm:"unique_index:idx_album_art_id_name"`
+	Name       string `json:"name"      gorm:"unique_index:idx_album_art_id_name"`
+	Popularity int    `json:"popularity"`
 }
 
 type AlbumMgr interface {
