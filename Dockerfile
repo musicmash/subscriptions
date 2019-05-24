@@ -9,7 +9,8 @@ COPY . .
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
-RUN go build -v -a -installsuffix cgo -gcflags "all=-trimpath=$(GOPATH)" -o bin/musicmash-artists cmd/artists/main.go
+RUN go build -v -a -installsuffix cgo -gcflags "all=-trimpath=$(GOPATH)" -o bin/artists    ./cmd/artists/main.go
+RUN go build -v -a -installsuffix cgo -gcflags "all=-trimpath=$(GOPATH)" -o bin/artistsctl ./cmd/artistsctl/main.go
 
 # Create the final small image.
 FROM alpine:latest
@@ -22,4 +23,4 @@ RUN apk update && apk upgrade && \
 WORKDIR /root/
 COPY --from=builder /go/src/github.com/musicmash/artists/bin .
 
-ENTRYPOINT ["./musicmash-artists"]
+ENTRYPOINT ["./artists"]
