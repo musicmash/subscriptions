@@ -133,12 +133,14 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 }
 
 func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID int64) {
+	tx := db.DbMgr.Begin()
 	albumPage, err := client.GetArtistAlbums(artistID)
 	if err != nil {
 		log.Error(err)
+		tx.Rollback()
 	}
 
-	processAlbums(client, albumPage.Albums, dbArtistID)
+	processAlbums(client, albumPage.Albums, dbArtistID, tx)
 
 	for albumPage.Total > albumPage.Limit+albumPage.Offset {
 		albumPage.Offset += albumPage.Limit
@@ -150,23 +152,25 @@ func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID
 		}
 		albumPage, err = client.GetArtistAlbumsOpt(artistID, &opts, nil)
 		if err != nil {
+			tx.Commit()
 			log.Panic(err)
 		}
 
-		processAlbums(client, albumPage.Albums, dbArtistID)
+		processAlbums(client, albumPage.Albums, dbArtistID, tx)
 	}
+	tx.Commit()
 }
 
-func processAlbums(client spotify.Client, albums []spotify.SimpleAlbum, dbArtistID int64) {
+func processAlbums(client spotify.Client, albums []spotify.SimpleAlbum, dbArtistID int64, tx db.DataMgr) {
 	for _, album := range albums {
 		log.Debugf("process albums from %s", album.Artists[0].Name)
-		processAlbum(client, album, dbArtistID)
+		processAlbum(client, album, dbArtistID, tx)
 	}
 }
 
-func processAlbum(client spotify.Client, album spotify.SimpleAlbum, dbArtistID int64) {
+func processAlbum(client spotify.Client, album spotify.SimpleAlbum, dbArtistID int64, tx db.DataMgr) {
 	log.Infof("saving album %s", album.Name)
-	err := db.DbMgr.EnsureAlbumExists(&db.Album{
+	err := tx.EnsureAlbumExists(&db.Album{
 		ArtistID: dbArtistID,
 		Name:     album.Name,
 	})
