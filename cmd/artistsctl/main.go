@@ -128,7 +128,7 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		log.Error("can't save spotify id for new artist")
 	}
 
-	log.Info("Loading and processing albums from", artist.Name)
+	log.Info("loading and processing albums from", artist.Name)
 	loadAndProcessAlbums(client, artist.ID, newArtist.ID)
 }
 
