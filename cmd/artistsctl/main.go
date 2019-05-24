@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 	"sort"
 
@@ -64,7 +65,7 @@ func main() {
 	}
 	token, err := credentials.Token(context.Background())
 	if err != nil {
-		log.Panic("couldn't get token: %v", err)
+		log.Panic(fmt.Errorf("couldn't get token: %v", err))
 	}
 
 	client := spotify.Authenticator{}.NewClient(token)
