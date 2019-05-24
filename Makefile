@@ -11,3 +11,7 @@ run:
 
 tests t:
 	go test -v ./internal/...
+
+lint-all l:
+	bash ./scripts/golangci-lint.sh
+	bash ./scripts/consistent.sh
