@@ -109,7 +109,11 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		return
 	}
 
-	newArtist := &db.Artist{Name: artist.Name, Popularity: artist.Popularity}
+	newArtist := &db.Artist{
+		Name:       artist.Name,
+		Popularity: artist.Popularity,
+		Followers:  artist.Followers.Count,
+	}
 	if len(artist.Images) > 0 {
 		newArtist.Poster = artist.Images[0].URL
 	}

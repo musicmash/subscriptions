@@ -10,6 +10,7 @@ type Artist struct {
 	Name       string `json:"name"`
 	Poster     string `json:"poster"`
 	Popularity int    `json:"popularity"`
+	Followers  uint   `json:"followers"`
 }
 
 type ArtistStoreInfo struct {
