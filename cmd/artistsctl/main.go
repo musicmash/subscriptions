@@ -118,7 +118,7 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		newArtist.Poster = artist.Images[0].URL
 	}
 
-	log.Info("creating new artist", *newArtist)
+	log.Info("creating new artist", newArtist.Name)
 	if err := db.DbMgr.EnsureArtistExists(newArtist); err != nil {
 		log.Error("can't create new artist")
 	}
@@ -128,6 +128,7 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		log.Error("can't save spotify id for new artist")
 	}
 
+	log.Info("Loading and processing albums from", artist.Name)
 	loadAndProcessAlbums(client, artist.ID, newArtist.ID)
 }
 
@@ -158,13 +159,13 @@ func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID
 
 func processAlbums(client spotify.Client, albums []spotify.SimpleAlbum, dbArtistID int64) {
 	for _, album := range albums {
-		log.Info("process albums from", album.Artists[0].Name)
+		log.Debugf("process albums from %s", album.Artists[0].Name)
 		processAlbum(client, album, dbArtistID)
 	}
 }
 
 func processAlbum(client spotify.Client, album spotify.SimpleAlbum, dbArtistID int64) {
-	log.Info("saving album ", album.Name, "for artist ", dbArtistID)
+	log.Infof("saving album %s", album.Name)
 	err := db.DbMgr.EnsureAlbumExists(&db.Album{
 		ArtistID: dbArtistID,
 		Name:     album.Name,
