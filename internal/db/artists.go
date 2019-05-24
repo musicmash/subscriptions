@@ -76,7 +76,7 @@ func (mgr *AppDatabaseMgr) IsArtistExistsInStore(storeName, storeID string) bool
 
 func (mgr *AppDatabaseMgr) EnsureArtistExistsInStore(artistID int64, storeName, storeID string) error {
 	if !mgr.IsArtistExistsInStore(storeName, storeID) {
-		return mgr.db.Create(ArtistStoreInfo{ArtistID: artistID, StoreName: storeName, StoreID: storeID}).Error
+		return mgr.db.Create(&ArtistStoreInfo{ArtistID: artistID, StoreName: storeName, StoreID: storeID}).Error
 	}
 	return nil
 }

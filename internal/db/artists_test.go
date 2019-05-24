@@ -69,6 +69,9 @@ func TestDB_ArtistStoreInfo_EnsureArtistExistsInStore(t *testing.T) {
 	setup()
 	defer teardown()
 
+	// arrange
+	assert.NoError(t, DbMgr.EnsureStoreExists(vars.StoreDeezer))
+
 	// action
 	err := DbMgr.EnsureArtistExistsInStore(vars.StoreIDQ, vars.StoreDeezer, vars.StoreIDA)
 
@@ -84,6 +87,7 @@ func TestDB_ArtistStoreInfo_GetArtistFromStore(t *testing.T) {
 	defer teardown()
 
 	// arrange
+	assert.NoError(t, DbMgr.EnsureStoreExists(vars.StoreApple))
 	assert.NoError(t, DbMgr.EnsureArtistExistsInStore(vars.StoreIDQ, vars.StoreApple, vars.StoreIDA))
 	assert.NoError(t, DbMgr.EnsureArtistExistsInStore(vars.StoreIDQ, vars.StoreApple, vars.StoreIDB))
 
