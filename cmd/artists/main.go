@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 
+	"github.com/musicmash/artists/internal/api"
 	"github.com/musicmash/artists/internal/config"
 	"github.com/musicmash/artists/internal/db"
 	"github.com/musicmash/artists/internal/log"
@@ -27,4 +28,5 @@ func init() {
 
 func main() {
 	log.Info("Starting artists service...")
+	log.Panic(api.ListenAndServe(config.Config.HTTP.IP, config.Config.HTTP.Port))
 }

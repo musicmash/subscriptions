@@ -11,8 +11,9 @@ import (
 var Config *AppConfig
 
 type AppConfig struct {
-	DB  DBConfig  `yaml:"db"`
-	Log LogConfig `yaml:"log"`
+	DB   DBConfig   `yaml:"db"`
+	Log  LogConfig  `yaml:"log"`
+	HTTP HTTPConfig `yaml:"http"`
 }
 
 type LogConfig struct {
@@ -28,6 +29,11 @@ type DBConfig struct {
 	Login string `yaml:"login"`
 	Pass  string `yaml:"pass"`
 	Log   bool   `yaml:"log"`
+}
+
+type HTTPConfig struct {
+	IP   string `yaml:"ip"`
+	Port int    `yaml:"port"`
 }
 
 func InitConfig(filepath string) error {
