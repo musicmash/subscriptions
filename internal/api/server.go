@@ -20,6 +20,7 @@ func getMux() *chi.Mux {
 
 	// healthz is a liveness probe
 	r.Get("/healthz", healthz)
+	r.Get("/v1/search", search)
 	return r
 }
 
