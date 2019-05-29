@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"sync"
 
 	"github.com/musicmash/artists/internal/config"
 	"github.com/musicmash/artists/internal/db"
@@ -15,7 +16,8 @@ import (
 )
 
 const (
-	storeName = "spotify"
+	storeName    = "spotify"
+	workersCount = 5
 )
 
 var (
@@ -25,7 +27,15 @@ var (
 	clientSecret string
 
 	searchQuery string
+
+	artistJobs chan *Job
+	wg         = sync.WaitGroup{}
 )
+
+type Job struct {
+	SpotifyArtist *spotify.FullArtist
+	DBArtistID    int64
+}
 
 func init() {
 	flag.StringVar(&clientID, "id", "", "spotify app id")
@@ -51,6 +61,7 @@ func init() {
 
 	db.DbMgr = db.NewMainDatabaseMgr()
 
+	artistJobs = make(chan *Job, workersCount)
 	log.Info("Ensuring that 'spotify' exists...")
 	if err := db.DbMgr.EnsureStoreExists(storeName); err != nil {
 		log.Panic(err)
@@ -69,6 +80,10 @@ func main() {
 	}
 
 	client := spotify.Authenticator{}.NewClient(token)
+	for workerID := 1; workerID <= workersCount; workerID++ {
+		go parseArtistsAlbums(workerID, client)
+	}
+
 	results, err := client.SearchOpt(searchQuery, spotify.SearchTypeArtist, &spotify.Options{
 		Limit: &limit,
 	})
@@ -87,6 +102,20 @@ func main() {
 
 		log.Debugf("limit %v offset %v total %v", results.Artists.Limit, results.Artists.Offset, results.Artists.Total)
 		processArtists(client, sortArtistsByPopularity(results.Artists.Artists))
+	}
+
+	wg.Wait()
+	close(artistJobs)
+}
+
+func parseArtistsAlbums(workerID int, client spotify.Client) {
+	log.Infof("worker #%d spawned", workerID)
+	for {
+		job := <-artistJobs
+
+		log.Infof("loading and processing '%s' albums", job.SpotifyArtist.Name)
+		loadAndProcessAlbums(client, job.SpotifyArtist.ID, job.DBArtistID)
+		wg.Done()
 	}
 }
 
@@ -128,8 +157,8 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		log.Error("can't save spotify id for new artist")
 	}
 
-	log.Infof("loading and processing '%s' albums", artist.Name)
-	loadAndProcessAlbums(client, artist.ID, newArtist.ID)
+	artistJobs <- &Job{SpotifyArtist: &artist, DBArtistID: newArtist.ID}
+	wg.Add(1)
 }
 
 func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID int64) {
