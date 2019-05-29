@@ -114,7 +114,7 @@ func parseArtistsAlbums(workerID int, client spotify.Client) {
 	for {
 		job := <-artistJobs
 
-		log.Infof("loading and processing '%s' albums", job.SpotifyArtist.Name)
+		log.Infof("worker #%d loading and processing '%s' albums", workerID, job.SpotifyArtist.Name)
 		loadAndProcessAlbums(client, job.SpotifyArtist.ID, job.DBArtistID)
 		wg.Done()
 	}
