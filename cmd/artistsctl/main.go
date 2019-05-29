@@ -153,7 +153,7 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		log.Error("can't create new artist")
 	}
 
-	log.Info("save spotify id for new artist", newArtist.ID)
+	log.Info("saving artist_store_info for new artist", newArtist.ID)
 	if err := db.DbMgr.EnsureArtistExistsInStore(newArtist.ID, storeName, artist.ID.String()); err != nil {
 		log.Error("can't save spotify id for new artist")
 	}
