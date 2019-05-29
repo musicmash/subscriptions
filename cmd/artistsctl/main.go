@@ -65,7 +65,7 @@ func init() {
 	db.DbMgr = db.NewMainDatabaseMgr()
 
 	artistJobs = make(chan *Job, workersCount)
-	log.Info("Ensuring that 'spotify' exists...")
+	log.Info("ensuring that 'spotify' exists...")
 	if err := db.DbMgr.EnsureStoreExists(storeName); err != nil {
 		log.Panic(err)
 	}
