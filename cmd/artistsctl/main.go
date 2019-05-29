@@ -28,6 +28,8 @@ var (
 
 	searchQuery string
 
+	forceSearchAndSave bool
+
 	artistJobs chan *Job
 	wg         = sync.WaitGroup{}
 )
@@ -41,6 +43,7 @@ func init() {
 	flag.StringVar(&clientID, "id", "", "spotify app id")
 	flag.StringVar(&clientSecret, "secret", "", "spotify app secret")
 	flag.StringVar(&searchQuery, "query", "adept", "name to search")
+	flag.BoolVar(&forceSearchAndSave, "force", false, "search artist and overwrite if exists")
 	configPath := flag.String("config", "/etc/musicmash/artists/artists.yaml", "Path to artists.yaml config")
 	flag.Parse()
 
@@ -134,7 +137,7 @@ func processArtists(client spotify.Client, artists []spotify.FullArtist) {
 }
 
 func processArtist(client spotify.Client, artist spotify.FullArtist) {
-	if exists := db.DbMgr.IsArtistExistsInStore(storeName, artist.ID.String()); exists {
+	if exists := db.DbMgr.IsArtistExistsInStore(storeName, artist.ID.String()); exists && !forceSearchAndSave {
 		log.Warn(artist.ID, artist.Name, "already exists")
 		return
 	}
