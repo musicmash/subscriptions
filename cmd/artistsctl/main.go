@@ -169,7 +169,7 @@ func processAlbums(client spotify.Client, albums []spotify.SimpleAlbum, dbArtist
 }
 
 func processAlbum(client spotify.Client, album spotify.SimpleAlbum, dbArtistID int64, tx db.DataMgr) {
-	log.Infof("saving album %s", album.Name)
+	log.Debugf("saving album %s", album.Name)
 	err := tx.EnsureAlbumExists(&db.Album{
 		ArtistID: dbArtistID,
 		Name:     album.Name,
