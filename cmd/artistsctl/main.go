@@ -84,6 +84,7 @@ func main() {
 		go parseArtistsAlbums(workerID, client)
 	}
 
+	log.Infof("searching '%s'", searchQuery)
 	results, err := client.SearchOpt(searchQuery, spotify.SearchTypeArtist, &spotify.Options{
 		Limit: &limit,
 	})
