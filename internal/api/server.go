@@ -18,7 +18,6 @@ func getMux() *chi.Mux {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// healthz is a liveness probe
 	r.Get("/healthz", healthz)
 	r.Get("/v1/search", search)
 	return r
