@@ -9,6 +9,7 @@ COPY . .
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
+RUN go install -v ./cmd/...
 RUN go build -v -a -installsuffix cgo -gcflags "all=-trimpath=$(GOPATH)" -o bin/artists    ./cmd/artists/main.go
 RUN go build -v -a -installsuffix cgo -gcflags "all=-trimpath=$(GOPATH)" -o bin/artistsctl ./cmd/artistsctl/main.go
 

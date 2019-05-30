@@ -8,19 +8,19 @@ import (
 	"github.com/musicmash/artists/internal/log"
 )
 
-func doSearch(w http.ResponseWriter, r *http.Request) {
-	artistNames, provided := r.URL.Query()["artist_name"]
+func getArtists(w http.ResponseWriter, r *http.Request) {
+	stores, provided := r.URL.Query()["store"]
 	if !provided {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if len(artistNames[0]) == 0 {
+	if len(stores[0]) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	artists, err := db.DbMgr.SearchArtists(artistNames[0])
+	artists, err := db.DbMgr.GetArtistsForStore(stores[0])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)

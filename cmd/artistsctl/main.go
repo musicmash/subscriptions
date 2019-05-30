@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"sync"
 
 	"github.com/musicmash/artists/internal/config"
 	"github.com/musicmash/artists/internal/db"
@@ -15,7 +16,8 @@ import (
 )
 
 const (
-	storeName = "spotify"
+	storeName    = "spotify"
+	workersCount = 5
 )
 
 var (
@@ -25,12 +27,23 @@ var (
 	clientSecret string
 
 	searchQuery string
+
+	forceSearchAndSave bool
+
+	artistJobs chan *Job
+	wg         = sync.WaitGroup{}
 )
+
+type Job struct {
+	SpotifyArtist *spotify.FullArtist
+	DBArtistID    int64
+}
 
 func init() {
 	flag.StringVar(&clientID, "id", "", "spotify app id")
 	flag.StringVar(&clientSecret, "secret", "", "spotify app secret")
 	flag.StringVar(&searchQuery, "query", "adept", "name to search")
+	flag.BoolVar(&forceSearchAndSave, "force", false, "search artist and overwrite if exists")
 	configPath := flag.String("config", "/etc/musicmash/artists/artists.yaml", "Path to artists.yaml config")
 	flag.Parse()
 
@@ -51,7 +64,8 @@ func init() {
 
 	db.DbMgr = db.NewMainDatabaseMgr()
 
-	log.Info("Ensuring that 'spotify' exists...")
+	artistJobs = make(chan *Job, workersCount)
+	log.Info("ensuring that 'spotify' exists...")
 	if err := db.DbMgr.EnsureStoreExists(storeName); err != nil {
 		log.Panic(err)
 	}
@@ -69,6 +83,11 @@ func main() {
 	}
 
 	client := spotify.Authenticator{}.NewClient(token)
+	for workerID := 1; workerID <= workersCount; workerID++ {
+		go parseArtistsAlbums(workerID, client)
+	}
+
+	log.Infof("searching '%s'", searchQuery)
 	results, err := client.SearchOpt(searchQuery, spotify.SearchTypeArtist, &spotify.Options{
 		Limit: &limit,
 	})
@@ -88,6 +107,20 @@ func main() {
 		log.Debugf("limit %v offset %v total %v", results.Artists.Limit, results.Artists.Offset, results.Artists.Total)
 		processArtists(client, sortArtistsByPopularity(results.Artists.Artists))
 	}
+
+	wg.Wait()
+	close(artistJobs)
+}
+
+func parseArtistsAlbums(workerID int, client spotify.Client) {
+	log.Infof("worker #%d spawned", workerID)
+	for {
+		job := <-artistJobs
+
+		log.Infof("worker #%d loading and processing '%s' albums", workerID, job.SpotifyArtist.Name)
+		loadAndProcessAlbums(client, job.SpotifyArtist.ID, job.DBArtistID)
+		wg.Done()
+	}
 }
 
 func sortArtistsByPopularity(artists []spotify.FullArtist) []spotify.FullArtist {
@@ -104,7 +137,7 @@ func processArtists(client spotify.Client, artists []spotify.FullArtist) {
 }
 
 func processArtist(client spotify.Client, artist spotify.FullArtist) {
-	if exists := db.DbMgr.IsArtistExistsInStore(storeName, artist.ID.String()); exists {
+	if exists := db.DbMgr.IsArtistExistsInStore(storeName, artist.ID.String()); exists && !forceSearchAndSave {
 		log.Warn(artist.ID, artist.Name, "already exists")
 		return
 	}
@@ -123,13 +156,13 @@ func processArtist(client spotify.Client, artist spotify.FullArtist) {
 		log.Error("can't create new artist")
 	}
 
-	log.Info("save spotify id for new artist", newArtist.ID)
+	log.Info("saving artist_store_info for new artist", newArtist.ID)
 	if err := db.DbMgr.EnsureArtistExistsInStore(newArtist.ID, storeName, artist.ID.String()); err != nil {
 		log.Error("can't save spotify id for new artist")
 	}
 
-	log.Info("loading and processing albums from", artist.Name)
-	loadAndProcessAlbums(client, artist.ID, newArtist.ID)
+	artistJobs <- &Job{SpotifyArtist: &artist, DBArtistID: newArtist.ID}
+	wg.Add(1)
 }
 
 func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID int64) {
@@ -144,7 +177,7 @@ func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID
 
 	for albumPage.Total > albumPage.Limit+albumPage.Offset {
 		albumPage.Offset += albumPage.Limit
-		log.Info("getting next albums...")
+		log.Infof("getting next albums for artist %v...", dbArtistID)
 
 		opts := spotify.Options{
 			Limit:  &limit,
@@ -169,7 +202,7 @@ func processAlbums(client spotify.Client, albums []spotify.SimpleAlbum, dbArtist
 }
 
 func processAlbum(client spotify.Client, album spotify.SimpleAlbum, dbArtistID int64, tx db.DataMgr) {
-	log.Infof("saving album %s", album.Name)
+	log.Debugf("saving album %s", album.Name)
 	err := tx.EnsureAlbumExists(&db.Album{
 		ArtistID: dbArtistID,
 		Name:     album.Name,
