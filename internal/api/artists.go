@@ -8,7 +8,7 @@ import (
 	"github.com/musicmash/artists/internal/log"
 )
 
-func artists(w http.ResponseWriter, r *http.Request) {
+func getArtists(w http.ResponseWriter, r *http.Request) {
 	stores, provided := r.URL.Query()["store"]
 	if !provided {
 		w.WriteHeader(http.StatusBadRequest)

@@ -1,13 +1,11 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/musicmash/artists/internal/db"
 	"github.com/musicmash/artists/internal/testutil/vars"
+	"github.com/musicmash/artists/pkg/api/artists"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,14 +21,10 @@ func TestAPI_Artists_GetForStore(t *testing.T) {
 	assert.NoError(t, db.DbMgr.EnsureArtistExistsInStore(2, vars.StoreApple, vars.StoreIDB))
 
 	// action
-	url := fmt.Sprintf("%v/v1/artists?store=%s", server.URL, vars.StoreApple)
-	resp, err := http.Get(url)
+	artists, err := artists.Get(client, vars.StoreApple)
 
 	// assert
 	assert.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	artists := []*db.ArtistStoreInfo{}
-	assert.NoError(t, json.NewDecoder(resp.Body).Decode(&artists))
 	assert.Len(t, artists, 2)
 	// Skrillex
 	assert.Equal(t, int64(1), artists[0].ArtistID)
@@ -54,13 +48,9 @@ func TestAPI_Artists_GetForStore_Empty(t *testing.T) {
 	assert.NoError(t, db.DbMgr.EnsureArtistExistsInStore(2, vars.StoreApple, vars.StoreIDB))
 
 	// action
-	url := fmt.Sprintf("%v/v1/artists?store=%s", server.URL, vars.StoreDeezer)
-	resp, err := http.Get(url)
+	artists, err := artists.Get(client, vars.StoreDeezer)
 
 	// assert
 	assert.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	artists := []*db.ArtistStoreInfo{}
-	assert.NoError(t, json.NewDecoder(resp.Body).Decode(&artists))
 	assert.Len(t, artists, 0)
 }

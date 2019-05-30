@@ -8,7 +8,7 @@ import (
 	"github.com/musicmash/artists/internal/log"
 )
 
-func search(w http.ResponseWriter, r *http.Request) {
+func doSearch(w http.ResponseWriter, r *http.Request) {
 	artistNames, provided := r.URL.Query()["artist_name"]
 	if !provided {
 		w.WriteHeader(http.StatusBadRequest)
