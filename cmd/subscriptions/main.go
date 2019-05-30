@@ -3,14 +3,14 @@ package main
 import (
 	"flag"
 
-	"github.com/musicmash/artists/internal/api"
-	"github.com/musicmash/artists/internal/config"
-	"github.com/musicmash/artists/internal/db"
-	"github.com/musicmash/artists/internal/log"
+	"github.com/musicmash/subscriptions/internal/api"
+	"github.com/musicmash/subscriptions/internal/config"
+	"github.com/musicmash/subscriptions/internal/db"
+	"github.com/musicmash/subscriptions/internal/log"
 )
 
 func init() {
-	configPath := flag.String("config", "/etc/musicmash/artists/artists.yaml", "Path to artists.yaml config")
+	configPath := flag.String("config", "/etc/musicmash/subscriptions/subscriptions.yaml", "Path to subscriptions.yaml config")
 	flag.Parse()
 
 	if err := config.InitConfig(*configPath); err != nil {
@@ -27,6 +27,6 @@ func init() {
 }
 
 func main() {
-	log.Info("Starting artists service...")
+	log.Info("Starting subscriptions service...")
 	log.Panic(api.ListenAndServe(config.Config.HTTP.IP, config.Config.HTTP.Port))
 }
