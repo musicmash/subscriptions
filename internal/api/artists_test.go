@@ -3,9 +3,9 @@ package api
 import (
 	"testing"
 
-	"github.com/musicmash/artists/internal/db"
-	"github.com/musicmash/artists/internal/testutil/vars"
-	"github.com/musicmash/artists/pkg/api/artists"
+	"github.com/musicmash/subscriptions/internal/db"
+	"github.com/musicmash/subscriptions/internal/testutil/vars"
+	"github.com/musicmash/subscriptions/pkg/api/artists"
 	"github.com/stretchr/testify/assert"
 )
 

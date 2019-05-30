@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/musicmash/artists/internal/db"
+	"github.com/musicmash/subscriptions/internal/db"
 	"github.com/musicmash/subscriptions/internal/log"
 )
 

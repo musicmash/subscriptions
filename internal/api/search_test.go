@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/musicmash/artists/internal/db"
-	"github.com/musicmash/artists/internal/testutil/vars"
-	"github.com/musicmash/artists/pkg/api/search"
+	"github.com/musicmash/subscriptions/internal/db"
+	"github.com/musicmash/subscriptions/internal/testutil/vars"
+	"github.com/musicmash/subscriptions/pkg/api/search"
 	"github.com/stretchr/testify/assert"
 )
 
