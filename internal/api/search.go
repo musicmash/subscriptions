@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/musicmash/artists/internal/db"
-	"github.com/musicmash/artists/internal/log"
+	"github.com/musicmash/subscriptions/internal/log"
 )
 
 func doSearch(w http.ResponseWriter, r *http.Request) {

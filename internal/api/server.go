@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/musicmash/artists/internal/log"
+	"github.com/musicmash/subscriptions/internal/log"
 )
 
 func getMux() *chi.Mux {
