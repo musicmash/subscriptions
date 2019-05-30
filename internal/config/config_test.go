@@ -13,14 +13,14 @@ func TestConfig_Load(t *testing.T) {
 db:
   type:  'mysql'
   host:  'mariadb'
-  name:  'musicmash-artists'
-  login: 'musicmash-artists'
-  pass:  'musicmash-artists'
+  name:  'musicmash-subscriptions'
+  login: 'musicmash-subscriptions'
+  pass:  'musicmash-subscriptions'
   log: false
 
 log:
   level: DEBUG
-  file: 'musicmash-artists.log'
+  file: 'musicmash-subscriptions.log'
   syslog_enable: false
 
 http:
@@ -30,14 +30,14 @@ http:
 		DB: DBConfig{
 			Type:  "mysql",
 			Host:  "mariadb",
-			Name:  "musicmash-artists",
-			Login: "musicmash-artists",
-			Pass:  "musicmash-artists",
+			Name:  "musicmash-subscriptions",
+			Login: "musicmash-subscriptions",
+			Pass:  "musicmash-subscriptions",
 			Log:   false,
 		},
 		Log: LogConfig{
 			Level:         "DEBUG",
-			File:          "musicmash-artists.log",
+			File:          "musicmash-subscriptions.log",
 		},
 		HTTP: HTTPConfig{
 			Port: 5566,

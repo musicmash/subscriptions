@@ -1,0 +1,15 @@
+db:
+  type:  'mysql'
+  host:  'mariadb'
+  name:  'musicmash-subscriptions'
+  login: 'musicmash-subscriptions'
+  pass:  'musicmash-subscriptions'
+  log: false
+
+log:
+  level: DEBUG
+  file: 'musicmash-subscriptions.log'
+  syslog_enable: false
+
+http:
+  port: 5566
