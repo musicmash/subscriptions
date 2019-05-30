@@ -177,7 +177,7 @@ func loadAndProcessAlbums(client spotify.Client, artistID spotify.ID, dbArtistID
 
 	for albumPage.Total > albumPage.Limit+albumPage.Offset {
 		albumPage.Offset += albumPage.Limit
-		log.Info("getting next albums...")
+		log.Infof("getting next albums for artist %v...", dbArtistID)
 
 		opts := spotify.Options{
 			Limit:  &limit,
