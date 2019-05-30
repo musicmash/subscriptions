@@ -3,10 +3,7 @@ package db
 import "github.com/jinzhu/gorm"
 
 var tables = []interface{}{
-	Artist{},
-	ArtistStoreInfo{},
-	Store{},
-	Album{},
+	Subscription{},
 }
 
 func CreateTables(db *gorm.DB) error {
@@ -22,15 +19,7 @@ func CreateAll(db *gorm.DB) error {
 		return err
 	}
 
-	fkeys := map[interface{}][][2]string{
-		&ArtistStoreInfo{}: {
-			{"artist_id", "artists(id)"},
-			{"store_name", "stores(name)"},
-		},
-		&Album{}: {
-			{"artist_id", "artists(id)"},
-		},
-	}
+	fkeys := map[interface{}][][2]string{}
 
 	for model, foreignKey := range fkeys {
 		for _, fk := range foreignKey {
@@ -41,15 +30,9 @@ func CreateAll(db *gorm.DB) error {
 		}
 	}
 
-	if err := db.Debug().Model(&Album{}).AddUniqueIndex(
-		"idx_album_art_id_name",
-		"artist_id", "name").Error; err != nil {
-		return err
-	}
-
-	if err := db.Debug().Model(&ArtistStoreInfo{}).AddUniqueIndex(
-		"idx_art_store_name_id",
-		"store_name", "store_id").Error; err != nil {
+	if err := db.Debug().Model(&Subscription{}).AddUniqueIndex(
+		"idx_user_name_artist_id",
+		"user_name", "artist_id").Error; err != nil {
 		return err
 	}
 

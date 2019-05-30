@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/musicmash/artists/internal/config"
+	"github.com/musicmash/subscriptions/internal/config"
 	"github.com/musicmash/subscriptions/internal/log"
 	"github.com/pkg/errors"
 )
