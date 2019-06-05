@@ -10,7 +10,7 @@ import (
 
 var (
 	logger        = logrus.New()
-	logFileSearch = "/musicmash-subscriptions/"
+	logFileSearch = "/musicmash/subscriptions/"
 )
 
 func SetLogLevel(level logrus.Level) {
