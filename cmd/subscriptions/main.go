@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	configPath := flag.String("config", "/etc/musicmash/subscriptions/subscriptions.yaml", "Path to subscriptions.yaml config")
+	configPath := flag.String("config", "/etc/musicmash/subscriptions.yaml", "Path to subscriptions.yaml config")
 	flag.Parse()
 
 	if err := config.InitConfig(*configPath); err != nil {
