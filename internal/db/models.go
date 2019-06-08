@@ -36,11 +36,5 @@ func CreateAll(db *gorm.DB) error {
 		return err
 	}
 
-	if err := db.Debug().Model(&Subscription{}).AddIndex(
-		"idx_user_name",
-		"user_name").Error; err != nil {
-		return err
-	}
-
 	return nil
 }
