@@ -61,12 +61,7 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	subs := make([]*db.Subscription, len(artists))
-	for i, artistID := range artists {
-		subs[i] = &db.Subscription{UserName: usersNames[0], ArtistID: artistID}
-	}
-
-	if err := db.DbMgr.SubscribeUser(subs); err != nil {
+	if err := db.DbMgr.SubscribeUser(usersNames[0], artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return

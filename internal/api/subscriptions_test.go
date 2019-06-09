@@ -14,8 +14,8 @@ func TestAPI_Subscriptions_Get(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserBot, ArtistID: vars.StoreIDW}}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserBot, []int64{vars.StoreIDW}))
 
 	// action
 	artists, err := subscriptions.Get(client, vars.UserObjque)
@@ -32,8 +32,8 @@ func TestAPI_Subscriptions_Get_UserWithoutSubscriptions(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDW}}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDW}))
 
 	// action
 	artists, err := subscriptions.Get(client, vars.UserBot)
@@ -48,8 +48,8 @@ func TestAPI_Subscriptions_Get_BadUserName(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDW}}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDW}))
 
 	// action
 	artists, err := subscriptions.Get(client, "")
@@ -64,8 +64,8 @@ func TestAPI_Subscriptions_Unsubscribe(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
-	assert.NoError(t, db.DbMgr.SubscribeUser([]*db.Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDW}}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDW}))
 
 	// action
 	err := subscriptions.Delete(client, vars.UserObjque, []int64{vars.StoreIDQ, vars.StoreIDW})

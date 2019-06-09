@@ -8,7 +8,7 @@ type Subscription struct {
 
 type SubscriptionMgr interface {
 	GetUserSubscriptions(userName string) ([]*Subscription, error)
-	SubscribeUser(subscriptions []*Subscription) error
+	SubscribeUser(userName string, artists []int64) error
 	UnSubscribeUser(userName string, artists []int64) error
 }
 
@@ -21,16 +21,24 @@ func (mgr *AppDatabaseMgr) GetUserSubscriptions(userName string) ([]*Subscriptio
 	return subs, nil
 }
 
-func (mgr *AppDatabaseMgr) SubscribeUser(subscriptions []*Subscription) error {
-	tx := mgr.Begin()
-	for _, sub := range subscriptions {
-		if err := tx.db.Create(&sub).Error; err != nil {
-			tx.Rollback()
+func (mgr *AppDatabaseMgr) SubscribeUser(userName string, artists []int64) error {
+	var q = "insert ignore into subscriptions (user_name, artist_id) values (?, ?)"
+	if mgr.GetDialectName() == "sqlite3" {
+		q = "insert or ignore into subscriptions (user_name, artist_id) values (?, ?)"
+	}
+
+	query, err := mgr.db.DB().Prepare(q)
+	if err != nil {
+		return err
+	}
+
+	for _, artistID := range artists {
+		_, err := query.Exec(userName, artistID)
+		if err != nil {
 			return err
 		}
 	}
 
-	tx.Commit()
 	return nil
 }
 

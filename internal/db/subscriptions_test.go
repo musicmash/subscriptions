@@ -12,7 +12,7 @@ func TestDB_Subscriptions_SubscribeAndGet(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, DbMgr.SubscribeUser([]*Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
+	assert.NoError(t, DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
 
 	// action
 	subs, err := DbMgr.GetUserSubscriptions(vars.UserObjque)
@@ -29,7 +29,7 @@ func TestDB_Subscriptions_Get_ForAnotherUser(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, DbMgr.SubscribeUser([]*Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
+	assert.NoError(t, DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
 
 	// action
 	subs, err := DbMgr.GetUserSubscriptions(vars.UserBot)
@@ -44,7 +44,7 @@ func TestDB_Subscriptions_UnSubscribe(t *testing.T) {
 	defer teardown()
 
 	// arrange
-	assert.NoError(t, DbMgr.SubscribeUser([]*Subscription{{UserName: vars.UserObjque, ArtistID: vars.StoreIDQ}}))
+	assert.NoError(t, DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
 	subs, err := DbMgr.GetUserSubscriptions(vars.UserObjque)
 	assert.NoError(t, err)
 	assert.Equal(t, vars.UserObjque, subs[0].UserName)
