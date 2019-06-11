@@ -42,6 +42,22 @@ func TestAPI_Subscriptions_Get_UserWithoutSubscriptions(t *testing.T) {
 	assert.Len(t, artists, 0)
 }
 
+func TestAPI_Subscriptions_Get_BadUserName(t *testing.T) {
+	setup()
+	defer teardown()
+
+	// arrange
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDW}))
+
+	// action
+	artists, err := subscriptions.Get(client, "")
+
+	// assert
+	assert.Error(t, err)
+	assert.Nil(t, artists)
+}
+
 func TestAPI_Subscriptions_Unsubscribe(t *testing.T) {
 	setup()
 	defer teardown()
@@ -58,6 +74,17 @@ func TestAPI_Subscriptions_Unsubscribe(t *testing.T) {
 	subs, err := db.DbMgr.GetUserSubscriptions(vars.UserObjque)
 	assert.NoError(t, err)
 	assert.Len(t, subs, 0)
+}
+
+func TestAPI_Subscriptions_Unsubscribe_EmptyUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	// action
+	err := subscriptions.Delete(client, "", []int64{})
+
+	// assert
+	assert.Error(t, err)
 }
 
 func TestAPI_Subscriptions_Unsubscribe_EmptyArtists(t *testing.T) {
