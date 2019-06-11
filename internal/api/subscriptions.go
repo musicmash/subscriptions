@@ -9,18 +9,7 @@ import (
 )
 
 func getSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if len(usersNames[0]) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	artists, err := db.DbMgr.GetUserSubscriptions(usersNames[0])
+	artists, err := db.DbMgr.GetUserSubscriptions(GetUserName(r))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
@@ -39,17 +28,6 @@ func getSubscriptions(w http.ResponseWriter, r *http.Request) {
 }
 
 func createSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if len(usersNames[0]) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
 	artists := []int64{}
 	if err := json.NewDecoder(r.Body).Decode(&artists); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -61,7 +39,7 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DbMgr.SubscribeUser(usersNames[0], artists); err != nil {
+	if err := db.DbMgr.SubscribeUser(GetUserName(r), artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return
@@ -71,17 +49,6 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if len(usersNames[0]) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
 	artists := []int64{}
 	if err := json.NewDecoder(r.Body).Decode(&artists); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -93,7 +60,7 @@ func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DbMgr.UnSubscribeUser(usersNames[0], artists); err != nil {
+	if err := db.DbMgr.UnSubscribeUser(GetUserName(r), artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return
