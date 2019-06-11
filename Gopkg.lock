@@ -29,14 +29,6 @@
   version = "v1.4.1"
 
 [[projects]]
-  digest = "1:318f1c959a8a740366fce4b1e1eb2fd914036b4af58fbd0a003349b305f118ad"
-  name = "github.com/golang/protobuf"
-  packages = ["proto"]
-  pruneopts = "UT"
-  revision = "b5d812f8a3706043e23a9cd5babf2e5423744d30"
-  version = "v1.3.1"
-
-[[projects]]
   digest = "1:af001a33c8c1bf6e1dd0d5577f4439b117af0518362e560000aa2e559c59b3bd"
   name = "github.com/jinzhu/gorm"
   packages = [
@@ -97,12 +89,9 @@
   version = "v2.4"
 
 [[projects]]
-  digest = "1:0a406a3f53396d476d8673920e58a1100ed706e3e6666a0355e6d32cb3430651"
+  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
   name = "github.com/sirupsen/logrus"
-  packages = [
-    ".",
-    "hooks/syslog",
-  ]
+  packages = ["."]
   pruneopts = "UT"
   revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
   version = "v1.4.2"
@@ -117,37 +106,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:76e3e4fcdb9fb80022db37fca1afb1cd6e78b5478ade4bf59526efb9e24b9e5b"
-  name = "github.com/zmb3/spotify"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "158b1863f5b544aaea5946273b97980f5ee5493f"
-
-[[projects]]
-  branch = "master"
-  digest = "1:f8b491a7c25030a895a0e579742d07136e6958e77ef2d46e769db8eec4e58fcd"
-  name = "golang.org/x/net"
-  packages = [
-    "context",
-    "context/ctxhttp",
-  ]
-  pruneopts = "UT"
-  revision = "f3200d17e092c607f615320ecaad13d87ad9a2b3"
-
-[[projects]]
-  branch = "master"
-  digest = "1:457f9784b7d0402c051d4af2aa29b9ac602129801b0e4a643006d294f40775ec"
-  name = "golang.org/x/oauth2"
-  packages = [
-    ".",
-    "clientcredentials",
-    "internal",
-  ]
-  pruneopts = "UT"
-  revision = "aaccbc9213b0974828f81aaac109d194880e3014"
-
-[[projects]]
-  branch = "master"
   digest = "1:9ca267f99487ef450fff0c2a49eaf0788d9ff3562bbaeff19f564d380f84bc6d"
   name = "golang.org/x/sys"
   packages = ["unix"]
@@ -155,18 +113,9 @@
   revision = "dbbf3f1254d491605cf4a0034ce25d0dc71b0c58"
 
 [[projects]]
-  digest = "1:7e8b9c5ae49011b12ae8473834ac1a7bb8ac029ba201270c723e4c280c9e4855"
+  digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
-  packages = [
-    "cloudsql",
-    "internal",
-    "internal/base",
-    "internal/datastore",
-    "internal/log",
-    "internal/remote_api",
-    "internal/urlfetch",
-    "urlfetch",
-  ]
+  packages = ["cloudsql"]
   pruneopts = "UT"
   revision = "4c25cacc810c02874000e4f7071286a8e96b2515"
   version = "v1.6.0"
@@ -191,10 +140,7 @@
     "github.com/pkg/errors",
     "github.com/rifflock/lfshook",
     "github.com/sirupsen/logrus",
-    "github.com/sirupsen/logrus/hooks/syslog",
     "github.com/stretchr/testify/assert",
-    "github.com/zmb3/spotify",
-    "golang.org/x/oauth2/clientcredentials",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"

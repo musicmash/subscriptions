@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/musicmash/artists/internal/db"
+	"github.com/musicmash/subscriptions/internal/db"
 )
 
 func healthz(w http.ResponseWriter, _ *http.Request) {

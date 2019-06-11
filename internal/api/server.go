@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/musicmash/artists/internal/log"
+	"github.com/musicmash/subscriptions/internal/log"
 )
 
 func getMux() *chi.Mux {
@@ -19,8 +19,14 @@ func getMux() *chi.Mux {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/healthz", healthz)
-	r.Get("/v1/search", doSearch)
-	r.Get("/v1/artists", getArtists)
+
+	r.Route("/v1", func(r chi.Router) {
+		r.Route("/subscriptions", func(r chi.Router) {
+			r.Get("/", getSubscriptions)
+			r.Delete("/", deleteSubscriptions)
+			r.Post("/", createSubscriptions)
+		})
+	})
 	return r
 }
 

@@ -3,8 +3,8 @@ package api
 import (
 	"net/http/httptest"
 
-	"github.com/musicmash/artists/internal/db"
-	apilib "github.com/musicmash/artists/pkg/api"
+	"github.com/musicmash/subscriptions/internal/db"
+	apilib "github.com/musicmash/subscriptions/pkg/api"
 )
 
 var (

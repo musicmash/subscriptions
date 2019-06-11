@@ -12,16 +12,14 @@ import (
 var DbMgr DataMgr
 
 type DataMgr interface {
-	ArtistMgr
-	ArtistStoreInfoMgr
-	StoreMgr
-	AlbumMgr
+	SubscriptionMgr
 	Begin() *AppDatabaseMgr
 	Commit() *AppDatabaseMgr
 	Rollback() *AppDatabaseMgr
 	Close() error
 	DropAllTables() error
 	Ping() error
+	GetDialectName() string
 }
 
 type AppDatabaseMgr struct {
@@ -70,4 +68,8 @@ func (mgr *AppDatabaseMgr) DropAllTables() error {
 
 func (mgr *AppDatabaseMgr) Ping() error {
 	return mgr.db.Exec("select 1").Error
+}
+
+func (mgr *AppDatabaseMgr) GetDialectName() string {
+	return mgr.db.Dialect().GetName()
 }

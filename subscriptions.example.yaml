@@ -1,0 +1,14 @@
+db:
+  type:  'mysql'
+  host:  'mariadb'
+  name:  'subscriptions'
+  login: 'subscriptions'
+  pass:  'subscriptions'
+  log: false
+
+log:
+  level: DEBUG
+  file: 'subscriptions.log'
+
+http:
+  port: 5566
