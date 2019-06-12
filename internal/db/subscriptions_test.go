@@ -39,6 +39,37 @@ func TestDB_Subscriptions_Get_ForAnotherUser(t *testing.T) {
 	assert.Len(t, subs, 0)
 }
 
+func TestDB_Subscriptions_SubscribeAndGetSimple(t *testing.T) {
+	setup()
+	defer teardown()
+
+	// arrange
+	assert.NoError(t, DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+
+	// action
+	subs, err := DbMgr.GetSimpleUserSubscriptions(vars.UserObjque)
+
+	// assert
+	assert.NoError(t, err)
+	assert.Len(t, subs, 1)
+	assert.Equal(t, int64(vars.StoreIDQ), subs[0])
+}
+
+func TestDB_Subscriptions_Get_ForAnotherUserSimple(t *testing.T) {
+	setup()
+	defer teardown()
+
+	// arrange
+	assert.NoError(t, DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+
+	// action
+	subs, err := DbMgr.GetSimpleUserSubscriptions(vars.UserBot)
+
+	// assert
+	assert.NoError(t, err)
+	assert.Len(t, subs, 0)
+}
+
 func TestDB_Subscriptions_UnSubscribe(t *testing.T) {
 	setup()
 	defer teardown()

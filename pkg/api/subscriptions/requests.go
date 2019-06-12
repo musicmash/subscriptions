@@ -9,7 +9,7 @@ import (
 	"github.com/musicmash/subscriptions/pkg/api"
 )
 
-func Get(provider *api.Provider, userName string) ([]*Subscription, error) {
+func Get(provider *api.Provider, userName string) ([]int64, error) {
 	url := fmt.Sprintf("%s/subscriptions?user_name=%s", provider.URL, userName)
 	resp, err := provider.Client.Get(url)
 	if err != nil {
@@ -21,7 +21,7 @@ func Get(provider *api.Provider, userName string) ([]*Subscription, error) {
 		return nil, fmt.Errorf("got %d status code", resp.StatusCode)
 	}
 
-	subscriptions := []*Subscription{}
+	subscriptions := []int64{}
 	if err := json.NewDecoder(resp.Body).Decode(&subscriptions); err != nil {
 		return nil, err
 	}
