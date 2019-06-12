@@ -20,7 +20,7 @@ func getSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	artists, err := db.DbMgr.GetUserSubscriptions(usersNames[0])
+	artists, err := db.DbMgr.GetSimpleUserSubscriptions(usersNames[0])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)

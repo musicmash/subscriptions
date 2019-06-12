@@ -23,7 +23,7 @@ func TestAPI_Subscriptions_Get(t *testing.T) {
 	// assert
 	assert.NoError(t, err)
 	assert.Len(t, artists, 1)
-	assert.Equal(t, int64(vars.StoreIDQ), artists[0].ArtistID)
+	assert.Equal(t, int64(vars.StoreIDQ), artists[0])
 }
 
 func TestAPI_Subscriptions_Get_UserWithoutSubscriptions(t *testing.T) {
