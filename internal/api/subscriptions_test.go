@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAPI_Subscriptions_Get(t *testing.T) {
+func TestAPI_Subscriptions_Get_User(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -24,6 +24,24 @@ func TestAPI_Subscriptions_Get(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, artists, 1)
 	assert.Equal(t, int64(vars.StoreIDQ), artists[0])
+}
+
+func TestAPI_Subscriptions_Get_Artists(t *testing.T) {
+	setup()
+	defer teardown()
+
+	// arrange
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserObjque, []int64{vars.StoreIDQ}))
+	assert.NoError(t, db.DbMgr.SubscribeUser(vars.UserBot, []int64{vars.StoreIDQ, vars.StoreIDW}))
+
+	// action
+	artists, err := subscriptions.GetArtistsSubscriptions(client, []int64{vars.StoreIDW})
+
+	// assert
+	assert.NoError(t, err)
+	assert.Len(t, artists, 1)
+	assert.Equal(t, int64(vars.StoreIDW), artists[0].ArtistID)
+	assert.Equal(t, vars.UserBot, artists[0].UserName)
 }
 
 func TestAPI_Subscriptions_Get_UserWithoutSubscriptions(t *testing.T) {
