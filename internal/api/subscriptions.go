@@ -9,18 +9,13 @@ import (
 )
 
 func getSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
+	userName := r.URL.Query().Get("user_name")
+	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if len(usersNames[0]) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	artists, err := db.DbMgr.GetSimpleUserSubscriptions(usersNames[0])
+	artists, err := db.DbMgr.GetSimpleUserSubscriptions(userName)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
@@ -39,13 +34,8 @@ func getSubscriptions(w http.ResponseWriter, r *http.Request) {
 }
 
 func createSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if len(usersNames[0]) == 0 {
+	userName := r.URL.Query().Get("user_name")
+	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -61,7 +51,7 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DbMgr.SubscribeUser(usersNames[0], artists); err != nil {
+	if err := db.DbMgr.SubscribeUser(userName, artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return
@@ -71,13 +61,8 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if len(usersNames[0]) == 0 {
+	userName := r.URL.Query().Get("user_name")
+	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -93,7 +78,7 @@ func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DbMgr.UnSubscribeUser(usersNames[0], artists); err != nil {
+	if err := db.DbMgr.UnSubscribeUser(userName, artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return
