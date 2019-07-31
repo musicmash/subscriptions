@@ -3,24 +3,55 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/musicmash/subscriptions/internal/db"
 	"github.com/musicmash/subscriptions/internal/log"
 )
 
 func getSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
+	if len(r.URL.Query()) == 0 {
+		// if no filters provided
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if len(usersNames[0]) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
+	userName := r.URL.Query().Get("user_name")
+	if userName != "" {
+		getUserSubscriptions(userName, w)
 		return
 	}
 
-	artists, err := db.DbMgr.GetSimpleUserSubscriptions(usersNames[0])
+	rawArtists := r.URL.Query().Get("artists")
+	if rawArtists != "" {
+		getArtistsSubscriptions(parseArtists(rawArtists), w)
+		return
+	}
+
+	// empty filters provided
+	w.WriteHeader(http.StatusBadRequest)
+}
+
+func parseArtists(rawArtists string) []int64 {
+	artists := []int64{}
+	for _, rawArtist := range strings.Split(rawArtists, ",") {
+		if rawArtist == "" {
+			continue
+		}
+
+		artistID, err := strconv.ParseInt(rawArtist, 10, 64)
+		if err != nil {
+			continue
+		}
+
+		artists = append(artists, artistID)
+	}
+	return artists
+}
+
+func getUserSubscriptions(userName string, w http.ResponseWriter) {
+	artists, err := db.DbMgr.GetSimpleUserSubscriptions(userName)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
@@ -38,14 +69,28 @@ func getSubscriptions(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(bytes)
 }
 
-func createSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
+func getArtistsSubscriptions(artists []int64, w http.ResponseWriter) {
+	subscriptions, err := db.DbMgr.GetArtistsSubscriptions(artists)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Error(err)
 		return
 	}
 
-	if len(usersNames[0]) == 0 {
+	bytes, err := json.Marshal(&subscriptions)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Error(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(bytes)
+}
+
+func createSubscriptions(w http.ResponseWriter, r *http.Request) {
+	userName := r.URL.Query().Get("user_name")
+	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -61,7 +106,7 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DbMgr.SubscribeUser(usersNames[0], artists); err != nil {
+	if err := db.DbMgr.SubscribeUser(userName, artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return
@@ -71,13 +116,8 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
-	usersNames, provided := r.URL.Query()["user_name"]
-	if !provided {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if len(usersNames[0]) == 0 {
+	userName := r.URL.Query().Get("user_name")
+	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -93,7 +133,7 @@ func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DbMgr.UnSubscribeUser(usersNames[0], artists); err != nil {
+	if err := db.DbMgr.UnSubscribeUser(userName, artists); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Error(err)
 		return

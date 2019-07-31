@@ -2,13 +2,14 @@ package db
 
 type Subscription struct {
 	ID       uint64 `json:"-"         gorm:"primary_key"     sql:"AUTO_INCREMENT"`
-	UserName string `json:"-"         gorm:"unique_index:idx_user_name_artist_id"`
+	UserName string `json:"user_name" gorm:"unique_index:idx_user_name_artist_id"`
 	ArtistID int64  `json:"artist_id" gorm:"unique_index:idx_user_name_artist_id"`
 }
 
 type SubscriptionMgr interface {
 	GetSimpleUserSubscriptions(userName string) ([]int64, error)
 	GetUserSubscriptions(userName string) ([]*Subscription, error)
+	GetArtistsSubscriptions(artists []int64) ([]*Subscription, error)
 	SubscribeUser(userName string, artists []int64) error
 	UnSubscribeUser(userName string, artists []int64) error
 }
@@ -16,6 +17,15 @@ type SubscriptionMgr interface {
 func (mgr *AppDatabaseMgr) GetUserSubscriptions(userName string) ([]*Subscription, error) {
 	subs := []*Subscription{}
 	err := mgr.db.Where("user_name = ?", userName).Find(&subs).Error
+	if err != nil {
+		return nil, err
+	}
+	return subs, nil
+}
+
+func (mgr *AppDatabaseMgr) GetArtistsSubscriptions(artists []int64) ([]*Subscription, error) {
+	subs := []*Subscription{}
+	err := mgr.db.Where("artist_id in (?)", artists).Order("user_name").Find(&subs).Error
 	if err != nil {
 		return nil, err
 	}

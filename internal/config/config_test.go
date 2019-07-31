@@ -35,8 +35,8 @@ http:
 			Log:   false,
 		},
 		Log: LogConfig{
-			Level:         "DEBUG",
-			File:          "subscriptions.log",
+			Level: "DEBUG",
+			File:  "subscriptions.log",
 		},
 		HTTP: HTTPConfig{
 			Port: 5566,
