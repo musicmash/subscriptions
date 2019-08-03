@@ -11,13 +11,7 @@ import (
 )
 
 func getSubscriptions(w http.ResponseWriter, r *http.Request) {
-	if len(r.URL.Query()) == 0 {
-		// if no filters provided
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	userName := r.URL.Query().Get("user_name")
+	userName := r.Header.Get("user_name")
 	if userName != "" {
 		getUserSubscriptions(userName, w)
 		return
@@ -89,7 +83,7 @@ func getArtistsSubscriptions(artists []int64, w http.ResponseWriter) {
 }
 
 func createSubscriptions(w http.ResponseWriter, r *http.Request) {
-	userName := r.URL.Query().Get("user_name")
+	userName := r.Header.Get("user_name")
 	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -116,7 +110,7 @@ func createSubscriptions(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteSubscriptions(w http.ResponseWriter, r *http.Request) {
-	userName := r.URL.Query().Get("user_name")
+	userName := r.Header.Get("user_name")
 	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
